@@ -3,11 +3,26 @@ import { readFile } from 'fs/promises'
 import { safeLoad } from 'js-yaml'
 import logger from '../lib/logger'
 
-export async function loadStaticData (file: string) {
-  const filePath = path.resolve('./data/static/' + file + '.yml')
-  return await readFile(filePath, 'utf8')
-    .then(safeLoad)
-    .catch(() => logger.error('Could not open file: "' + filePath + '"'))
+/**
+ * Sanitize the input file name to prevent path traversal attacks.
+ * Ensures the file name contains only valid characters and does not include directory traversal sequences.
+ */
+function sanitizeFileName(file: string): string {
+  if (!/^[a-zA-Z0-9_-]+$/.test(file)) {
+    throw new Error('Invalid file name: "' + file + '"')
+  }
+  return file
+}
+
+export async function loadStaticData(file: string) {
+  try {
+    const sanitizedFile = sanitizeFileName(file)
+    const filePath = path.resolve('./data/static/', sanitizedFile + '.yml')
+    return await readFile(filePath, 'utf8').then(safeLoad)
+  } catch (error) {
+    logger.error(error.message)
+    return null
+  }
 }
 
 export interface StaticUser {
@@ -51,7 +66,7 @@ export interface StaticUserCard {
   expMonth: number
   expYear: number
 }
-export async function loadStaticUserData (): Promise<StaticUser[]> {
+export async function loadStaticUserData(): Promise<StaticUser[]> {
   return await loadStaticData('users') as StaticUser[]
 }
 
@@ -70,7 +85,7 @@ export interface StaticChallenge {
     order: number
   }
 }
-export async function loadStaticChallengeData (): Promise<StaticChallenge[]> {
+export async function loadStaticChallengeData(): Promise<StaticChallenge[]> {
   return await loadStaticData('challenges') as StaticChallenge[]
 }
 
@@ -81,13 +96,13 @@ export interface StaticDelivery {
   eta: number
   icon: string
 }
-export async function loadStaticDeliveryData (): Promise<StaticDelivery[]> {
+export async function loadStaticDeliveryData(): Promise<StaticDelivery[]> {
   return await loadStaticData('deliveries') as StaticDelivery[]
 }
 
 export interface StaticSecurityQuestions {
   question: string
 }
-export async function loadStaticSecurityQuestionsData (): Promise<StaticSecurityQuestions[]> {
+export async function loadStaticSecurityQuestionsData(): Promise<StaticSecurityQuestions[]> {
   return await loadStaticData('securityQuestions') as StaticSecurityQuestions[]
 }
