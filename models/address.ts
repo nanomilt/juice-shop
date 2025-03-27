@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-import {
+ import {
   type CreationOptional,
   type InferAttributes,
   type InferCreationAttributes,
@@ -72,4 +72,4 @@ const AddressModelInit = (sequelize: Sequelize) => {
   )
 }
 
-export { Address as AddressModel, AddressModelInit }
+ export { Address as AddressModel, AddressModelInit }
