@@ -37,27 +37,26 @@ describe('LoginGuard', () => {
   }))
 
   it('returns payload from decoding a valid JWT', inject([LoginGuard], (guard: LoginGuard) => {
-    localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c')
-    expect(guard.tokenDecode()).toEqual({
-      sub: '1234567890',
-      name: 'John Doe',
-      iat: 1516239022
-    })
+    const secret = process.env.SECRET_KEY // Replace with your secret key
+    const payload = { sub: '1234567890', name: 'John Doe', iat: 1516239022 }
+    const token = guard.generateToken(payload, secret)
+    localStorage.setItem('token', token)
+    expect(guard.tokenDecode(token, secret)).toEqual(payload)
   }))
 
   it('returns nothing when decoding an invalid JWT', inject([LoginGuard], (guard: LoginGuard) => {
     localStorage.setItem('token', '12345.abcde')
-    expect(guard.tokenDecode()).toBeNull()
+    expect(guard.tokenDecode(localStorage.getItem('token'), process.env.SECRET_KEY)).toBeNull()
   }))
 
   it('returns nothing when decoding an non-existing JWT', inject([LoginGuard], (guard: LoginGuard) => {
     localStorage.removeItem('token')
-    expect(guard.tokenDecode()).toBeNull()
+    expect(guard.tokenDecode(null, process.env.SECRET_KEY)).toBeNull()
   }))
 })
 
 describe('AdminGuard', () => {
-  let loginGuard: any
+  let loginGuard: jasmine.SpyObj<LoginGuard>
 
   beforeEach(() => {
     loginGuard = jasmine.createSpyObj('LoginGuard', ['tokenDecode', 'forbidRoute'])
@@ -105,7 +104,7 @@ describe('AdminGuard', () => {
 })
 
 describe('AccountingGuard', () => {
-  let loginGuard: any
+  let loginGuard: jasmine.SpyObj<LoginGuard>
 
   beforeEach(() => {
     loginGuard = jasmine.createSpyObj('LoginGuard', ['tokenDecode', 'forbidRoute'])
@@ -153,7 +152,7 @@ describe('AccountingGuard', () => {
 })
 
 describe('DeluxeGuard', () => {
-  let loginGuard: any
+  let loginGuard: jasmine.SpyObj<LoginGuard>
 
   beforeEach(() => {
     loginGuard = jasmine.createSpyObj('LoginGuard', ['tokenDecode'])

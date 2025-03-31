@@ -7,6 +7,7 @@ import { type ComponentFixture, TestBed, waitForAsync } from '@angular/core/test
 import { LastLoginIpComponent } from './last-login-ip.component'
 import { MatCardModule } from '@angular/material/card'
 import { DomSanitizer } from '@angular/platform-browser'
+import * as jwt from 'jsonwebtoken'
 
 describe('LastLoginIpComponent', () => {
   let component: LastLoginIpComponent
@@ -15,7 +16,7 @@ describe('LastLoginIpComponent', () => {
 
   beforeEach(waitForAsync(() => {
     sanitizer = jasmine.createSpyObj('DomSanitizer', ['bypassSecurityTrustHtml', 'sanitize'])
-    sanitizer.bypassSecurityTrustHtml.and.callFake((args: any) => args)
+    sanitizer.bypassSecurityTrustHtml.and.callFake((args: string) => args)
     sanitizer.sanitize.and.returnValue({})
 
     TestBed.configureTestingModule({
@@ -47,13 +48,17 @@ describe('LastLoginIpComponent', () => {
   })
 
   xit('should set Last-Login IP from JWT as trusted HTML', () => { // FIXME Expected state seems to leak over from previous test case occasionally
-    localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Imxhc3RMb2dpbklwIjoiMS4yLjMuNCJ9fQ.RAkmdqwNypuOxv3SDjPO4xMKvd1CddKvDFYDBfUt3bg')
+    const secret = process.env.JWT_SECRET || 'changeme'
+    const token = jwt.sign({ data: { lastLoginIp: '1.2.3.4' } }, secret, { algorithm: 'HS256' })
+    localStorage.setItem('token', token)
     component.ngOnInit()
     expect(sanitizer.bypassSecurityTrustHtml).toHaveBeenCalledWith('<small>1.2.3.4</small>')
   })
 
   xit('should not set Last-Login IP if none is present in JWT', () => { // FIXME Expected state seems to leak over from previous test case occasionally
-    localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7fX0.bVBhvll6IaeR3aUdoOeyR8YZe2S2DfhGAxTGfd9enLw')
+    const secret = process.env.JWT_SECRET || 'changeme'
+    const token = jwt.sign({ data: {} }, secret, { algorithm: 'HS256' })
+    localStorage.setItem('token', token)
     component.ngOnInit()
     expect(sanitizer.bypassSecurityTrustHtml).not.toHaveBeenCalled()
   })

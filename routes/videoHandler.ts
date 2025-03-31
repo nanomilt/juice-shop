@@ -54,6 +54,9 @@ exports.promotionVideo = () => {
       let template = buf.toString()
       const subs = getSubsFromFile()
 
+      // Sanitize the subtitles data to prevent XSS
+      subs = entities.encode(subs)
+
       challengeUtils.solveIf(challenges.videoXssChallenge, () => { return utils.contains(subs, '</script><script>alert(`xss`)</script>') })
 
       const theme = themes[config.get<string>('application.theme')]
@@ -76,14 +79,14 @@ exports.promotionVideo = () => {
 }
 
 function getSubsFromFile () {
-  const subtitles = config.get<string>('application.promotion.subtitles') ?? 'owasp_promo.vtt'
+  const subtitles = process.env.SUBTITLES || 'owasp_promo.vtt'
   const data = fs.readFileSync('frontend/dist/frontend/assets/public/videos/' + subtitles, 'utf8')
   return data.toString()
 }
 
 function videoPath () {
-  if (config.get<string>('application.promotion.video') !== null) {
-    const video = utils.extractFilename(config.get<string>('application.promotion.video'))
+  if (process.env.PROMOTION_VIDEO !== null) {
+    const video = utils.extractFilename(process.env.PROMOTION_VIDEO)
     return 'frontend/dist/frontend/assets/public/videos/' + video
   }
   return 'frontend/dist/frontend/assets/public/videos/owasp_promo.mp4'

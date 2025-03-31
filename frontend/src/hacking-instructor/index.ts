@@ -108,7 +108,7 @@ function loadHint (hint: ChallengeHint): HTMLElement {
 
   const textBox = document.createElement('span')
   textBox.style.flexGrow = '2'
-  textBox.innerHTML = snarkdown(hint.text)
+  textBox.textContent = snarkdown(hint.text) // Use textContent instead of innerHTML
 
   const cancelButton = document.createElement('button')
   cancelButton.id = 'cancelButton'

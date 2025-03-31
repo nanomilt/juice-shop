@@ -5,8 +5,8 @@
 
 import jwtDecode from 'jwt-decode'
 
-let config
-const playbackDelays = {
+let config: any
+const playbackDelays: { [key: string]: number } = {
   faster: 0.5,
   fast: 0.75,
   normal: 1.0,
@@ -20,7 +20,7 @@ export async function sleep (timeInMs: number): Promise<void> {
   })
 }
 
-export function waitForInputToHaveValue (inputSelector: string, value: string, options: any = { ignoreCase: true, replacement: [] }) {
+export function waitForInputToHaveValue (inputSelector: string, value: string, options: { ignoreCase?: boolean, replacement?: [string, string] } = { ignoreCase: true, replacement: [] }) {
   return async () => {
     const inputElement: HTMLInputElement = document.querySelector(
       inputSelector
@@ -33,7 +33,7 @@ export function waitForInputToHaveValue (inputSelector: string, value: string, o
         config = json.config
       }
       const propertyChain = options.replacement[1].split('.')
-      let replacementValue = config
+      let replacementValue: any = config
       for (const property of propertyChain) {
         replacementValue = replacementValue[property]
       }
@@ -174,7 +174,7 @@ export function waitForAdminLogIn () {
       try {
         const token: string = localStorage.getItem('token')
         const decodedToken = jwtDecode(token)
-        const payload = decodedToken as any
+        const payload = decodedToken as { data: { role: string } }
         role = payload.data.role
       } catch {
         console.log('Role from token could not be accessed.')

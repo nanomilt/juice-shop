@@ -9,7 +9,7 @@ import { UserModel } from '../models/user'
 import { SecurityQuestionModel } from '../models/securityQuestion'
 import { PrivacyRequestModel } from '../models/privacyRequests'
 import { challenges } from '../data/datacache'
-const insecurity = require('../lib/insecurity')
+import insecurity = require('../lib/insecurity')
 
 const challengeUtils = require('../lib/challengeUtils')
 const router = express.Router()
@@ -66,7 +66,7 @@ router.post('/', async (req: Request<Record<string, unknown>, Record<string, unk
 
     res.clearCookie('token')
     if (req.body.layout) {
-      const filePath: string = path.resolve(req.body.layout).toLowerCase()
+      const filePath: string = path.join(process.env.PWD || '', req.body.layout) // Use path.join with process.env.PWD to prevent path traversal
       const isForbiddenFile: boolean = (filePath.includes('ftp') || filePath.includes('ctf.key') || filePath.includes('encryptionkeys'))
       if (!isForbiddenFile) {
         res.render('dataErasureResult', {

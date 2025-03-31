@@ -19,6 +19,7 @@ import validateChatBot from '../lib/startup/validateChatBot'
 import * as security from '../lib/insecurity'
 import * as botUtils from '../lib/botUtils'
 import { challenges } from '../data/datacache'
+import DOMPurify from 'dompurify' // Import DOMPurify library
 
 let trainingFile = config.get<string>('application.chatBot.trainingData')
 let testCommand: string

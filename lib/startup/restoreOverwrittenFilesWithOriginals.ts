@@ -25,7 +25,8 @@ const restoreOverwrittenFilesWithOriginals = async () => {
     const files = await glob(path.resolve('data/static/i18n/*.json'))
     await Promise.all(
       files.map(async (filename: string) => {
-        await copyFile(filename, path.resolve('i18n/', filename.substring(filename.lastIndexOf('/') + 1)))
+        const sanitizedFilename = path.basename(filename) // Sanitize the filename to prevent path traversal
+        await copyFile(filename, path.resolve('i18n/', sanitizedFilename))
       })
     )
   } catch (err) {
