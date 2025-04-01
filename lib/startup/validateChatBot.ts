@@ -8,7 +8,17 @@ import logger from '../logger'
 import colors from 'colors/safe'
 import * as utils from '../utils'
 
-export default function validateChatBot (trainingData: any, exitOnFailure = true) {
+interface TrainingData {
+  data: {
+    intent: string;
+    answers: {
+      action: string;
+      handler: string;
+    }[];
+  }[];
+}
+
+export default function validateChatBot (trainingData: TrainingData, exitOnFailure = true) {
   let success = true
   success = checkIntentWithFunctionHandlerExists(trainingData, 'queries.couponCode', 'couponCode') && success
   success = checkIntentWithFunctionHandlerExists(trainingData, 'queries.productPrice', 'productPrice') && success
@@ -26,14 +36,14 @@ export default function validateChatBot (trainingData: any, exitOnFailure = true
   return success
 }
 
-export const checkIntentWithFunctionHandlerExists = (trainingData: any, intent: string, handler: string) => {
+export const checkIntentWithFunctionHandlerExists = (trainingData: TrainingData, intent: string, handler: string) => {
   let success = true
-  const intentData = trainingData.data.filter((data: any) => data.intent === intent)
+  const intentData = trainingData.data.filter((data) => data.intent === intent)
   if (intentData.length === 0) {
     logger.warn(`Intent ${colors.italic(intent)} is missing in chatbot training data (${colors.red('NOT OK')})`)
     success = false
   } else {
-    if (intentData[0].answers.filter((answer: { action: string, handler: string }) => answer.action === 'function' && answer.handler === handler).length === 0) {
+    if (intentData[0].answers.filter((answer) => answer.action === 'function' && answer.handler === handler).length === 0) {
       logger.warn(`Answer with ${colors.italic('function')} action and handler ${colors.italic(handler)} is missing for intent ${colors.italic(intent)} (${colors.red('NOT OK')})`)
       success = false
     }

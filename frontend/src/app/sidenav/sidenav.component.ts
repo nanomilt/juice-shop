@@ -5,7 +5,7 @@
 
 import { environment } from '../../environments/environment'
 import { ChallengeService } from '../Services/challenge.service'
-import { Component, EventEmitter, NgZone, type OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, NgZone, OnInit, Output } from '@angular/core'
 import { SocketIoService } from '../Services/socket-io.service'
 import { AdministrationService } from '../Services/administration.service'
 import { Router } from '@angular/router'
@@ -37,9 +37,8 @@ export class SidenavComponent implements OnInit {
     private readonly router: Router, private readonly configurationService: ConfigurationService, private readonly loginGuard: LoginGuard) { }
 
   ngOnInit () {
-    this.administrationService.getApplicationVersion().subscribe((version: any) => {
+    this.administrationService.getApplicationVersion().subscribe((version: string) => {
       if (version) {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         this.version = `v${version}`
       }
     }, (err) => { console.log(err) })
@@ -90,7 +89,6 @@ export class SidenavComponent implements OnInit {
     window.location.replace(environment.hostServer + '/dataerasure')
   }
 
-  // eslint-disable-next-line no-empty,@typescript-eslint/no-empty-function
   noop () { }
 
   getScoreBoardStatus () {

@@ -9,9 +9,14 @@ import logger from '../logger'
 // @ts-expect-error FIXME due to non-existing type definitions for check-dependencies
 import dependencyChecker from 'check-dependencies'
 
+interface Dependencies {
+  depsWereOk: boolean;
+  error: string[];
+}
+
 const validateDependencies = async ({ packageDir = '.', exitOnFailure = true } = {}) => {
   let success = true
-  let dependencies: any = {}
+  let dependencies: Dependencies = { depsWereOk: false, error: [] }
   try {
     dependencies = await dependencyChecker({ packageDir, scopeList: ['dependencies'] })
   } catch (err) {

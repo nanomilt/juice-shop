@@ -22,9 +22,9 @@ library.add(faTwitter)
 })
 export class OrderCompletionComponent implements OnInit {
   public tableColumns = ['product', 'price', 'quantity', 'total price']
-  public dataSource
+  public dataSource: MatTableDataSource<any>
   public orderId: string
-  public orderDetails: any = { totalPrice: 0 }
+  public orderDetails: { totalPrice: number, addressId?: string, paymentId?: string, itemTotal?: number, eta?: string, products?: any[], bonus?: number } = { totalPrice: 0 }
   public deliveryPrice = 0
   public promotionalDiscount = 0
   public address: any
@@ -46,7 +46,7 @@ export class OrderCompletionComponent implements OnInit {
         this.orderDetails.eta = results.data[0].eta || '?'
         this.orderDetails.products = results.data[0].products
         this.orderDetails.bonus = results.data[0].bonus
-        this.dataSource = new MatTableDataSource<Element>(this.orderDetails.products)
+        this.dataSource = new MatTableDataSource<any>(this.orderDetails.products)
         for (const product of this.orderDetails.products) {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           this.tweetText += `%0a- ${product.name}`

@@ -5,8 +5,7 @@
 
 import { type Request, type Response, type NextFunction } from 'express'
 import { BasketModel } from '../models/basket'
-
-const security = require('../lib/insecurity')
+import security from '../lib/insecurity'
 
 module.exports = function applyCoupon () {
   return ({ params }: Request, res: Response, next: NextFunction) => {

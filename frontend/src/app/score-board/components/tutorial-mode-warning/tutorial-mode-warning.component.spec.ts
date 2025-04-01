@@ -3,6 +3,20 @@ import { type ComponentFixture, TestBed } from '@angular/core/testing'
 import { TutorialModeWarningComponent } from './tutorial-mode-warning.component'
 import { TranslateModule } from '@ngx-translate/core'
 
+interface Challenge {
+  category: string;
+  name: string;
+  tutorialOrder: number | null;
+  solved: boolean;
+  description?: string;
+}
+
+interface ApplicationConfig {
+  challenges: {
+    restrictToTutorialsFirst: boolean;
+  }
+}
+
 describe('TutorialModeWarningComponent', () => {
   let component: TutorialModeWarningComponent
   let fixture: ComponentFixture<TutorialModeWarningComponent>
@@ -30,13 +44,13 @@ describe('TutorialModeWarningComponent', () => {
         tutorialOrder: null,
         solved: false
       }
-    ] as any
+    ]
 
     component.applicationConfig = {
       challenges: {
         restrictToTutorialsFirst: true
       }
-    } as any
+    }
 
     fixture.detectChanges()
   })
@@ -51,7 +65,7 @@ describe('TutorialModeWarningComponent', () => {
       challenges: {
         restrictToTutorialsFirst: false
       }
-    } as any
+    }
     component.ngOnChanges()
     expect(component.tutorialModeActive).toBe(false)
   })
@@ -71,7 +85,7 @@ describe('TutorialModeWarningComponent', () => {
         tutorialOrder: null,
         solved: false
       }
-    ] as any
+    ]
     component.ngOnChanges()
     expect(component.tutorialModeActive).toBe(false)
   })

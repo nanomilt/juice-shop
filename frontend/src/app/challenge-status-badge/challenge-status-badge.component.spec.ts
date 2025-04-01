@@ -18,9 +18,9 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatTooltipModule } from '@angular/material/tooltip'
 
 describe('ChallengeStatusBadgeComponent', () => {
-  let challengeService: any
-  let translateService: any
-  let windowRefService: any
+  let challengeService: ChallengeService
+  let translateService: TranslateService
+  let windowRefService: WindowRefService
   let component: ChallengeStatusBadgeComponent
   let fixture: ComponentFixture<ChallengeStatusBadgeComponent>
 

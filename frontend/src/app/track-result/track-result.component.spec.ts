@@ -24,7 +24,7 @@ describe('TrackResultComponent', () => {
     trackOrderService = jasmine.createSpyObj('TrackOrderService', ['find'])
     trackOrderService.find.and.returnValue(of({ data: [{ }] }))
     sanitizer = jasmine.createSpyObj('DomSanitizer', ['bypassSecurityTrustHtml', 'sanitize'])
-    sanitizer.bypassSecurityTrustHtml.and.callFake((args: any) => args)
+    sanitizer.bypassSecurityTrustHtml.and.callFake((args: string) => args)
     sanitizer.sanitize.and.returnValue({})
 
     TestBed.configureTestingModule({

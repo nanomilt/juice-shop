@@ -24,9 +24,9 @@ const coupledChallenges = { // TODO prevent also near-identical challenges (e.g.
 }
 const trivialChallenges = ['errorHandlingChallenge', 'privacyPolicyChallenge', 'closeNotificationsChallenge']
 
-const solves: Array<{ challenge: any, phase: string, timestamp: Date, cheatScore: number }> = [{ challenge: {}, phase: 'server start', timestamp: new Date(), cheatScore: 0 }] // seed with server start timestamp
+const solves: Array<{ challenge: Challenge, phase: string, timestamp: Date, cheatScore: number }> = [{ challenge: {}, phase: 'server start', timestamp: new Date(), cheatScore: 0 }] // seed with server start timestamp
 
-const preSolveInteractions: Array<{ challengeKey: any, urlFragments: string[], interactions: boolean[] }> = [
+const preSolveInteractions: Array<{ challengeKey: string, urlFragments: string[], interactions: boolean[] }> = [
   { challengeKey: 'missingEncodingChallenge', urlFragments: ['/assets/public/images/uploads/%F0%9F%98%BC-'], interactions: [false] },
   { challengeKey: 'directoryListingChallenge', urlFragments: ['/ftp'], interactions: [false] },
   { challengeKey: 'easterEggLevelOneChallenge', urlFragments: ['/ftp', '/ftp/eastere.gg'], interactions: [false, false] },
@@ -123,8 +123,7 @@ export const totalCheatScore = () => {
 }
 
 function areCoupled (challenge: Challenge, previousChallenge: Challenge) {
-  // @ts-expect-error FIXME any type issues
-  return coupledChallenges[challenge.key]?.indexOf(previousChallenge.key) > -1 || coupledChallenges[previousChallenge.key]?.indexOf(challenge.key) > -1
+  return coupledChallenges[challenge.key]?.includes(previousChallenge.key) || coupledChallenges[previousChallenge.key]?.includes(challenge.key)
 }
 
 function isTrivial (challenge: Challenge) {

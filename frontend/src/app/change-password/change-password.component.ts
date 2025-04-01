@@ -23,8 +23,8 @@ export class ChangePasswordComponent {
   public passwordControl: UntypedFormControl = new UntypedFormControl('', [Validators.required])
   public newPasswordControl: UntypedFormControl = new UntypedFormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(40)])
   public repeatNewPasswordControl: UntypedFormControl = new UntypedFormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(40), matchValidator(this.newPasswordControl)])
-  public error: any
-  public confirmation: any
+  public error: string | undefined
+  public confirmation: string | undefined
 
   constructor (private readonly userService: UserService, private readonly formSubmitService: FormSubmitService, private readonly translate: TranslateService) { }
 
@@ -45,12 +45,12 @@ export class ChangePasswordComponent {
       this.translate.get('PASSWORD_SUCCESSFULLY_CHANGED').subscribe((passwordSuccessfullyChanged) => {
         this.confirmation = passwordSuccessfullyChanged
       }, (translationId) => {
-        this.confirmation = { error: translationId }
+        this.confirmation = translationId
       })
       this.resetForm()
     }, (error) => {
       console.log(error)
-      this.error = error
+      this.error = error.error
       this.confirmation = undefined
       this.resetPasswords()
     })

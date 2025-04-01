@@ -22,7 +22,7 @@ describe('ComplaintService', () => {
 
   it('should create complaint directly via the rest api', inject([ComplaintService, HttpTestingController],
     fakeAsync((service: ComplaintService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: { data: string }
       service.save(null).subscribe((data) => (res = data))
       const req = httpMock.expectOne('http://localhost:3000/api/Complaints/')
       req.flush({ data: 'apiResponse' })
@@ -30,7 +30,7 @@ describe('ComplaintService', () => {
       tick()
       expect(req.request.method).toBe('POST')
       expect(req.request.body).toBeNull()
-      expect(res).toBe('apiResponse')
+      expect(res).toEqual({ data: 'apiResponse' })
       httpMock.verify()
     })
   ))

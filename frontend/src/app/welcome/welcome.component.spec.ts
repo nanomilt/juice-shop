@@ -16,10 +16,10 @@ import { ConfigurationService } from '../Services/configuration.service'
 
 describe('WelcomeComponent', () => {
   let component: WelcomeComponent
-  let configurationService: any
-  let cookieService: any
+  let configurationService: ConfigurationService
+  let cookieService: CookieService
   let fixture: ComponentFixture<WelcomeComponent>
-  let dialog: any
+  let dialog: MatDialog
 
   beforeEach(() => {
     configurationService = jasmine.createSpyObj('ConfigurationService', ['getApplicationConfiguration'])

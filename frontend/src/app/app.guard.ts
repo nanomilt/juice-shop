@@ -8,6 +8,12 @@ import * as jwtDecode from 'jwt-decode'
 import { roles } from './roles'
 import { Injectable, NgZone } from '@angular/core'
 
+interface DecodedToken {
+  data: {
+    role: string;
+  };
+}
+
 @Injectable()
 export class LoginGuard implements CanActivate {
   constructor (private readonly router: Router, private readonly ngZone: NgZone) {}
@@ -28,8 +34,8 @@ export class LoginGuard implements CanActivate {
     }))
   }
 
-  tokenDecode () {
-    let payload: any = null
+  tokenDecode (): DecodedToken | null {
+    let payload: DecodedToken | null = null
     const token = localStorage.getItem('token')
     if (token) {
       try {

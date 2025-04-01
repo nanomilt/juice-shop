@@ -15,38 +15,37 @@ module.exports = function productReviews () {
   return (req: Request, res: Response, next: NextFunction) => {
     const id = req.body.id
     const user = security.authenticatedUsers.from(req)
-    db.reviewsCollection.findOne({ _id: id }).then((review: Review) => {
+    db.reviewsCollection.findOne({ _id: id }).then((review: Review | null) => {
       if (!review) {
         res.status(404).json({ error: 'Not found' })
       } else {
         const likedBy = review.likedBy
         if (!likedBy.includes(user.data.email)) {
-          db.reviewsCollection.update(
+          db.reviewsCollection.updateOne(
             { _id: id },
             { $inc: { likesCount: 1 } }
           ).then(
             () => {
               // Artificial wait for timing attack challenge
-              setTimeout(function () {
-                db.reviewsCollection.findOne({ _id: id }).then((review: Review) => {
-                  const likedBy = review.likedBy
-                  likedBy.push(user.data.email)
-                  let count = 0
-                  for (let i = 0; i < likedBy.length; i++) {
-                    if (likedBy[i] === user.data.email) {
-                      count++
-                    }
+              setTimeout(() => {
+                db.reviewsCollection.findOne({ _id: id }).then((review: Review | null) => {
+                  if (review) {
+                    const likedBy = review.likedBy
+                    likedBy.push(user.data.email)
+                    const count = likedBy.filter(email => email === user.data.email).length
+                    challengeUtils.solveIf(challenges.timingAttackChallenge, () => count > 2)
+                    db.reviewsCollection.updateOne(
+                      { _id: id },
+                      { $set: { likedBy } }
+                    ).then(
+                      (result: any) => {
+                        res.json(result)
+                      }, (err: unknown) => {
+                        res.status(500).json(err)
+                      })
+                  } else {
+                    res.status(400).json({ error: 'Wrong Params' })
                   }
-                  challengeUtils.solveIf(challenges.timingAttackChallenge, () => { return count > 2 })
-                  db.reviewsCollection.update(
-                    { _id: id },
-                    { $set: { likedBy } }
-                  ).then(
-                    (result: any) => {
-                      res.json(result)
-                    }, (err: unknown) => {
-                      res.status(500).json(err)
-                    })
                 }, () => {
                   res.status(400).json({ error: 'Wrong Params' })
                 })

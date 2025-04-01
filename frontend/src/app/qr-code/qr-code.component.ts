@@ -10,6 +10,13 @@ import { faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faArrowCircleLeft)
 
+interface DialogData {
+  title: string
+  url: string
+  address: string
+  data: string
+}
+
 @Component({
   selector: 'app-qr-code',
   templateUrl: './qr-code.component.html',
@@ -20,7 +27,7 @@ export class QrCodeComponent implements OnInit {
   public url!: string
   public address!: string
   public data!: string
-  constructor (@Inject(MAT_DIALOG_DATA) public dialogData: any) { }
+  constructor (@Inject(MAT_DIALOG_DATA) public dialogData: DialogData) { }
 
   ngOnInit () {
     this.title = this.dialogData.title

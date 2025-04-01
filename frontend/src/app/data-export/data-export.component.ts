@@ -17,13 +17,13 @@ import { DomSanitizer } from '@angular/platform-browser'
 export class DataExportComponent implements OnInit {
   public captchaControl: UntypedFormControl = new UntypedFormControl('', [Validators.required, Validators.minLength(5)])
   public formatControl: UntypedFormControl = new UntypedFormControl('', [Validators.required])
-  public captcha: any
-  private dataRequest: any = undefined
-  public confirmation: any
-  public error: any
-  public lastSuccessfulTry: any
+  public captcha: string
+  private dataRequest: { [key: string]: string } = {}
+  public confirmation: string
+  public error: string
+  public lastSuccessfulTry: Date
   public presenceOfCaptcha: boolean = false
-  public userData: any
+  public userData: string
 
   constructor (public sanitizer: DomSanitizer, private readonly imageCaptchaService: ImageCaptchaService, private readonly dataSubjectService: DataSubjectService) { }
   ngOnInit () {
@@ -33,7 +33,7 @@ export class DataExportComponent implements OnInit {
 
   needCaptcha () {
     const nowTime = new Date()
-    const timeOfCaptcha = localStorage.getItem('lstdtxprt') ? new Date(JSON.parse(String(localStorage.getItem('lstdtxprt')))) : new Date(0)
+    const timeOfCaptcha = localStorage.getItem('lstdtxprt') ? new Date(JSON.parse(localStorage.getItem('lstdtxprt'))) : new Date(0)
     if (nowTime.getTime() - timeOfCaptcha.getTime() < 300000) {
       this.getNewCaptcha()
       this.presenceOfCaptcha = true
@@ -41,7 +41,7 @@ export class DataExportComponent implements OnInit {
   }
 
   getNewCaptcha () {
-    this.imageCaptchaService.getCaptcha().subscribe((data: any) => {
+    this.imageCaptchaService.getCaptcha().subscribe((data: { image: string }) => {
       this.captcha = this.sanitizer.bypassSecurityTrustHtml(data.image)
     })
   }
@@ -51,7 +51,7 @@ export class DataExportComponent implements OnInit {
       this.dataRequest.answer = this.captchaControl.value
     }
     this.dataRequest.format = this.formatControl.value
-    this.dataSubjectService.dataExport(this.dataRequest).subscribe((data: any) => {
+    this.dataSubjectService.dataExport(this.dataRequest).subscribe((data: { confirmation: string, userData: string }) => {
       this.error = null
       this.confirmation = data.confirmation
       this.userData = data.userData

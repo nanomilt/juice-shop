@@ -8,6 +8,7 @@ import { Component, Inject, type OnInit } from '@angular/core'
 import { MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons'
+import { User } from '../../../models/user.model'
 
 library.add(faArrowCircleLeft)
 
@@ -17,8 +18,8 @@ library.add(faArrowCircleLeft)
   styleUrls: ['./user-details.component.scss']
 })
 export class UserDetailsComponent implements OnInit {
-  public user: any
-  constructor (@Inject(MAT_DIALOG_DATA) public dialogData: any, private readonly userService: UserService) { }
+  public user: User
+  constructor (@Inject(MAT_DIALOG_DATA) public dialogData: { id: number }, private readonly userService: UserService) { }
 
   ngOnInit () {
     this.userService.get(this.dialogData.id).subscribe((user) => {

@@ -6,17 +6,17 @@
 import { TranslateService } from '@ngx-translate/core'
 import { ChallengeService } from '../Services/challenge.service'
 import { ConfigurationService } from '../Services/configuration.service'
-import { ChangeDetectorRef, Component, NgZone, type OnInit } from '@angular/core'
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core'
 import { CookieService } from 'ngx-cookie'
 import { CountryMappingService } from 'src/app/Services/country-mapping.service'
 import { SocketIoService } from '../Services/socket-io.service'
 
 interface ChallengeSolvedMessage {
   challenge: string
-  hidden?: any
-  isRestore?: any
-  flag: any
-  key?: any
+  hidden?: boolean
+  isRestore?: boolean
+  flag: string
+  key?: string
 }
 
 interface ChallengeSolvedNotification {
@@ -35,7 +35,7 @@ export class ChallengeSolvedNotificationComponent implements OnInit {
   public notifications: ChallengeSolvedNotification[] = []
   public showCtfFlagsInNotifications: boolean = false
   public showCtfCountryDetailsInNotifications: string = 'none'
-  public countryMap?: any
+  public countryMap?: { [key: string]: { code: string, name: string } }
 
   constructor (private readonly ngZone: NgZone, private readonly configurationService: ConfigurationService, private readonly challengeService: ChallengeService, private readonly countryMappingService: CountryMappingService, private readonly translate: TranslateService, private readonly cookieService: CookieService, private readonly ref: ChangeDetectorRef, private readonly io: SocketIoService) {
   }
@@ -72,7 +72,7 @@ export class ChallengeSolvedNotificationComponent implements OnInit {
           this.showCtfCountryDetailsInNotifications = config.ctf.showCountryDetailsInNotifications
 
           if (config.ctf.showCountryDetailsInNotifications !== 'none') {
-            this.countryMappingService.getCountryMapping().subscribe((countryMap: any) => {
+            this.countryMappingService.getCountryMapping().subscribe((countryMap: { [key: string]: { code: string, name: string } }) => {
               this.countryMap = countryMap
             }, (err) => { console.log(err) })
           }
@@ -100,7 +100,7 @@ export class ChallengeSolvedNotificationComponent implements OnInit {
       (translationId) => translationId).then((message) => {
       let country
       if (this.showCtfCountryDetailsInNotifications && this.showCtfCountryDetailsInNotifications !== 'none') {
-        country = this.countryMap[challenge.key]
+        country = this.countryMap?.[challenge.key!]
       }
       this.notifications.push({
         message,

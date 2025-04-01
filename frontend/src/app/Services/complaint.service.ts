@@ -16,7 +16,7 @@ export class ComplaintService {
   private readonly host = this.hostServer + '/api/Complaints'
   constructor (private readonly http: HttpClient) { }
 
-  save (params: any) {
-    return this.http.post(this.host + '/', params).pipe(map((response: any) => response.data), catchError((err) => { throw err }))
+  save (params: { [key: string]: any }) {
+    return this.http.post(this.host + '/', params).pipe(map((response: { data: any }) => response.data), catchError((err) => { throw err }))
   }
 }

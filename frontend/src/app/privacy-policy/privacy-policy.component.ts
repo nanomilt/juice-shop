@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-import { Component, Inject, type OnInit } from '@angular/core'
+import { Component, Inject, OnInit } from '@angular/core'
 import { DOCUMENT } from '@angular/common'
 import { ConfigurationService } from '../Services/configuration.service'
 
@@ -21,7 +21,7 @@ export class PrivacyPolicyComponent implements OnInit {
 
   ngOnInit (): void {
     this.applicationUrl = this._document.location.protocol + '//' + this._document.location.hostname
-    this.configurationService.getApplicationConfiguration().subscribe((config: any) => {
+    this.configurationService.getApplicationConfiguration().subscribe((config: { application?: { name?: string, privacyContactEmail?: string } }) => {
       if (config?.application?.name) {
         this.applicationName = config.application.name
       }

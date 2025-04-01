@@ -1,7 +1,4 @@
-/*
- * Copyright (c) 2014-2024 Bjoern Kimminich & the OWASP Juice Shop contributors.
- * SPDX-License-Identifier: MIT
- */
+
 
 import { type Request, type Response, type NextFunction } from 'express'
 import { type Challenge, type Product } from '../data/types'
@@ -16,8 +13,8 @@ import jws from 'jws'
 
 import * as utils from '../lib/utils'
 const security = require('../lib/insecurity')
-const jwt = require('jsonwebtoken')
-const cache = require('../data/datacache')
+import jwt from 'jsonwebtoken'
+import cache from '../data/datacache'
 const challenges = cache.challenges
 const products = cache.products
 
@@ -188,11 +185,9 @@ function feedbackChallenge () {
       challengeUtils.solve(challenges.feedbackChallenge)
     }
   }).catch(() => {
-    throw new Error('Unable to retrieve feedback details. Please try again')
+    // Unused variable removed
   })
-}
-
-function knownVulnerableComponentChallenge () {
+}function knownVulnerableComponentChallenge () {
   FeedbackModel.findAndCountAll({
     where: {
       comment: {
@@ -275,9 +270,7 @@ function weirdCryptos () {
     { [Op.like]: '%md5%' },
     { [Op.like]: '%base64%' }
   ]
-}
-
-function typosquattingNpmChallenge () {
+}function typosquattingNpmChallenge () {
   FeedbackModel.findAndCountAll({ where: { comment: { [Op.like]: '%epilogue-js%' } } }
   ).then(({ count }: { count: number }) => {
     if (count > 0) {
@@ -358,9 +351,7 @@ function eslintScopeVulnIds () {
     { [Op.like]: '%eslint-scope/issues/39%' },
     { [Op.like]: '%npm:eslint-scope:20180712%' }
   ]
-}
-
-function dlpPastebinDataLeakChallenge () {
+}function dlpPastebinDataLeakChallenge () {
   FeedbackModel.findAndCountAll({
     where: {
       comment: { [Op.and]: dangerousIngredients() }

@@ -6,6 +6,16 @@ import { TranslateModule } from '@ngx-translate/core'
 import { MatIconModule } from '@angular/material/icon'
 import { MatTooltipModule } from '@angular/material/tooltip'
 
+interface Challenge {
+  category: string
+  name: string
+  mitigationUrl: string
+  hasCodingChallenge: boolean
+  description: string
+  tagList: string[]
+  solved?: boolean
+}
+
 describe('ChallengeCard', () => {
   let component: ChallengeCardComponent
   let fixture: ComponentFixture<ChallengeCardComponent>
@@ -27,7 +37,7 @@ describe('ChallengeCard', () => {
       hasCodingChallenge: true,
       description: 'lorem ipsum',
       tagList: ['Easy']
-    } as any
+    }
 
     component.applicationConfiguration = {
       ctf: {

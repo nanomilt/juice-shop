@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { environment } from '../../environments/environment'
 import { HttpClient } from '@angular/common/http'
 import { catchError, map } from 'rxjs/operators'
-import { type Observable } from 'rxjs'
+import { Observable } from 'rxjs'
 
 export interface result {
   verdict: boolean
@@ -29,10 +29,10 @@ export class CodeFixesService {
     return this.http.get(this.host + `/${key}`).pipe(map((response: Fixes) => response), catchError((error: any) => { throw error }))
   }
 
-  check (key: string, selectedFix: number): any {
-    return this.http.post(this.host, {
+  check (key: string, selectedFix: number): Observable<result> {
+    return this.http.post<result>(this.host, {
       key,
       selectedFix
-    }).pipe(map((response: result) => response), catchError((error: any) => { throw error }))
+    }).pipe(catchError((error: any) => { throw error }))
   }
 }

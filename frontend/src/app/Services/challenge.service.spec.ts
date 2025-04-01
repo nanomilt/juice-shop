@@ -39,7 +39,7 @@ describe('ChallengeService', () => {
 
   it('should get current continue code directly from the rest api', inject([ChallengeService, HttpTestingController],
     fakeAsync((service: ChallengeService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: string
       service.continueCode().subscribe((data) => (res = data))
 
       const req = httpMock.expectOne('http://localhost:3000/rest/continue-code')
@@ -69,7 +69,7 @@ describe('ChallengeService', () => {
 
   it('should get current "Find It" coding challenge continue code directly from the rest api', inject([ChallengeService, HttpTestingController],
     fakeAsync((service: ChallengeService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: string
       service.continueCodeFindIt().subscribe((data) => (res = data))
 
       const req = httpMock.expectOne('http://localhost:3000/rest/continue-code-findIt')
@@ -99,7 +99,7 @@ describe('ChallengeService', () => {
 
   it('should get current "Fix It" coding challenge continue code directly from the rest api', inject([ChallengeService, HttpTestingController],
     fakeAsync((service: ChallengeService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: string
       service.continueCodeFixIt().subscribe((data) => (res = data))
 
       const req = httpMock.expectOne('http://localhost:3000/rest/continue-code-fixIt')

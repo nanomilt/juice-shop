@@ -46,7 +46,7 @@ export class RegisterComponent implements OnInit {
     private readonly ngZone: NgZone) { }
 
   ngOnInit () {
-    this.securityQuestionService.find(null).subscribe((securityQuestions: any) => {
+    this.securityQuestionService.find(null).subscribe((securityQuestions: SecurityQuestion[]) => {
       this.securityQuestions = securityQuestions
     }, (err) => { console.log(err) })
 
@@ -62,7 +62,7 @@ export class RegisterComponent implements OnInit {
       securityAnswer: this.securityAnswerControl.value
     }
 
-    this.userService.save(user).subscribe((response: any) => {
+    this.userService.save(user).subscribe((response: { id: number }) => {
       this.securityAnswerService.save({
         UserId: response.id,
         answer: this.securityAnswerControl.value,

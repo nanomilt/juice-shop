@@ -12,6 +12,16 @@ import { Location } from '@angular/common'
 import { TranslateService } from '@ngx-translate/core'
 import { SnackBarHelperService } from '../Services/snack-bar-helper.service'
 
+interface Address {
+  country: string;
+  fullName: string;
+  mobileNum: number;
+  zipCode: string;
+  streetAddress: string;
+  city: string;
+  state?: string;
+}
+
 @Component({
   selector: 'app-address-create',
   templateUrl: './address-create.component.html',
@@ -25,7 +35,7 @@ export class AddressCreateComponent implements OnInit {
   public addressControl: UntypedFormControl = new UntypedFormControl('', [Validators.required, Validators.maxLength(160)])
   public cityControl: UntypedFormControl = new UntypedFormControl('', [Validators.required])
   public stateControl: UntypedFormControl = new UntypedFormControl()
-  public address: any = undefined
+  public address: Address | undefined = undefined
   public mode = 'create'
   private addressId: string = undefined
 
@@ -93,7 +103,7 @@ export class AddressCreateComponent implements OnInit {
     }
   }
 
-  initializeForm (address) {
+  initializeForm (address: Address) {
     this.countryControl.setValue(address.country)
     this.nameControl.setValue(address.fullName)
     this.numberControl.setValue(address.mobileNum)

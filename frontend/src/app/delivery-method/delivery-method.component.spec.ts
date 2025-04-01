@@ -30,8 +30,8 @@ import { MatDividerModule } from '@angular/material/divider'
 describe('DeliveryMethodComponent', () => {
   let component: DeliveryMethodComponent
   let fixture: ComponentFixture<DeliveryMethodComponent>
-  let addressService: any
-  let deliveryService: any
+  let addressService: jasmine.SpyObj<AddressService>
+  let deliveryService: jasmine.SpyObj<DeliveryService>
 
   beforeEach(waitForAsync(() => {
     addressService = jasmine.createSpyObj('AddressService', ['getById'])

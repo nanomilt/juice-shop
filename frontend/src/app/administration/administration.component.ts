@@ -9,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { FeedbackService } from '../Services/feedback.service'
 import { MatTableDataSource } from '@angular/material/table'
 import { UserService } from '../Services/user.service'
-import { Component, type OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit, ViewChild } from '@angular/core'
 import { DomSanitizer } from '@angular/platform-browser'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faArchive, faEye, faHome, faTrashAlt, faUser } from '@fortawesome/free-solid-svg-icons'
@@ -23,10 +23,10 @@ library.add(faUser, faEye, faHome, faArchive, faTrashAlt)
   styleUrls: ['./administration.component.scss']
 })
 export class AdministrationComponent implements OnInit {
-  public userDataSource: any
-  public userDataSourceHidden: any
+  public userDataSource: MatTableDataSource<{ email: string; lastLoginTime: number }> | null = null
+  public userDataSourceHidden: { email: string; lastLoginTime: number }[] | null = null
   public userColumns = ['user', 'email', 'user_detail']
-  public feedbackDataSource: any
+  public feedbackDataSource: MatTableDataSource<{ comment: string }> | null = null
   public feedbackColumns = ['user', 'comment', 'rating', 'remove']
   public error: any
   public resultsLengthUser = 0
@@ -43,12 +43,12 @@ export class AdministrationComponent implements OnInit {
 
   findAllUsers () {
     this.userService.find().subscribe((users) => {
-      this.userDataSource = users
+      this.userDataSource = new MatTableDataSource(users)
       this.userDataSourceHidden = users
-      for (const user of this.userDataSource) {
+      for (const user of users) {
         user.email = this.sanitizer.bypassSecurityTrustHtml(`<span class="${this.doesUserHaveAnActiveSession(user) ? 'confirmation' : 'error'}">${user.email}</span>`)
       }
-      this.userDataSource = new MatTableDataSource(this.userDataSource)
+      this.userDataSource.data = users
       this.userDataSource.paginator = this.paginatorUsers
       this.resultsLengthUser = users.length
     }, (err) => {
@@ -59,11 +59,11 @@ export class AdministrationComponent implements OnInit {
 
   findAllFeedbacks () {
     this.feedbackService.find().subscribe((feedbacks) => {
-      this.feedbackDataSource = feedbacks
-      for (const feedback of this.feedbackDataSource) {
+      this.feedbackDataSource = new MatTableDataSource(feedbacks)
+      for (const feedback of feedbacks) {
         feedback.comment = this.sanitizer.bypassSecurityTrustHtml(feedback.comment)
       }
-      this.feedbackDataSource = new MatTableDataSource(this.feedbackDataSource)
+      this.feedbackDataSource.data = feedbacks
       this.feedbackDataSource.paginator = this.paginatorFeedb
       this.resultsLengthFeedback = feedbacks.length
     }, (err) => {
@@ -89,7 +89,7 @@ export class AdministrationComponent implements OnInit {
     })
   }
 
-  showFeedbackDetails (feedback: any, id: number) {
+  showFeedbackDetails (feedback: { comment: string }, id: number) {
     this.dialog.open(FeedbackDetailsComponent, {
       data: {
         feedback,

@@ -17,13 +17,13 @@ export class RecycleService {
 
   constructor (private readonly http: HttpClient) { }
 
-  find (params?: any) {
+  find (params?: Record<string, any>) {
     return this.http.get(this.host + '/', {
       params
     }).pipe(map((response: any) => response.data), catchError((error) => { throw error }))
   }
 
-  save (params: any) {
+  save (params: Record<string, any>) {
     return this.http.post(this.host + '/', params).pipe(map((response: any) => response.data), catchError((error) => { throw error }))
   }
 }

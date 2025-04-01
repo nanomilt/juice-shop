@@ -24,7 +24,7 @@ library.add(faRocket, faShippingFast, faTruck)
 export class DeliveryMethodComponent implements OnInit {
   public displayedColumns = ['Selection', 'Name', 'Price', 'ETA']
   public methods: DeliveryMethod[]
-  public address: any
+  public address: any // Replace 'any' with the appropriate type
   public dataSource
   public deliveryMethodId: number = undefined
   selection = new SelectionModel<DeliveryMethod>(false, [])

@@ -67,7 +67,7 @@ export interface Config {
     }
     googleOauth: {
       clientId: string
-      authorizedRedirects: any[]
+      authorizedRedirects: string[]
     }
   }
   challenges: {
@@ -84,13 +84,25 @@ export interface Config {
     isEnabled: boolean
     avatarImage: string
   }
-  products: any[]
-  memories: any[]
+  products: Product[]
+  memories: Memory[]
   ctf: {
     showFlagsInNotifications: boolean
     showCountryDetailsInNotifications: string
-    countryMapping: any[]
+    countryMapping: CountryMapping[]
   }
+}
+
+interface Product {
+  [key: string]: any
+}
+
+interface Memory {
+  [key: string]: any
+}
+
+interface CountryMapping {
+  [key: string]: any
 }
 
 @Injectable({
@@ -99,7 +111,7 @@ export interface Config {
 export class ConfigurationService {
   private readonly hostServer = environment.hostServer
   private readonly host = this.hostServer + '/rest/admin'
-  private configObservable: any
+  private configObservable: Observable<Config> | null = null
   constructor (private readonly http: HttpClient) { }
 
   getApplicationConfiguration (): Observable<Config> {

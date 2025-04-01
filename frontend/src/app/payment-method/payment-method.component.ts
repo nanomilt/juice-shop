@@ -30,15 +30,15 @@ export class PaymentMethodComponent implements OnInit {
   public numberControl: UntypedFormControl = new UntypedFormControl('', [Validators.required, Validators.min(1000000000000000), Validators.max(9999999999999999)])
   public monthControl: UntypedFormControl = new UntypedFormControl('', [Validators.required])
   public yearControl: UntypedFormControl = new UntypedFormControl('', [Validators.required])
-  public confirmation: any
-  public error: any
-  public storedCards: any
-  public card: any = {}
-  public dataSource
-  public monthRange: any[]
-  public yearRange: any[]
+  public confirmation: string | undefined
+  public error: string | undefined
+  public storedCards: Array<any>
+  public card: { [key: string]: any } = {}
+  public dataSource: MatTableDataSource<any>
+  public monthRange: number[]
+  public yearRange: number[]
   public cardsExist: boolean = false
-  public paymentId: any = undefined
+  public paymentId: number | undefined
 
   constructor (public paymentService: PaymentService, private readonly translate: TranslateService, private readonly snackBarHelperService: SnackBarHelperService) { }
 
@@ -54,10 +54,10 @@ export class PaymentMethodComponent implements OnInit {
   }
 
   load () {
-    this.paymentService.get().subscribe((cards) => {
-      this.cardsExist = cards.length
+    this.paymentService.get().subscribe((cards: Array<any>) => {
+      this.cardsExist = cards.length > 0
       this.storedCards = cards
-      this.dataSource = new MatTableDataSource<Element>(this.storedCards)
+      this.dataSource = new MatTableDataSource<any>(this.storedCards)
     }, (err) => { console.log(err) })
   }
 
@@ -66,11 +66,11 @@ export class PaymentMethodComponent implements OnInit {
     this.card.cardNum = this.numberControl.value
     this.card.expMonth = this.monthControl.value
     this.card.expYear = this.yearControl.value
-    this.paymentService.save(this.card).subscribe((savedCards) => {
+    this.paymentService.save(this.card).subscribe((savedCards: any) => {
       this.error = null
-      this.translate.get('CREDIT_CARD_SAVED', { cardnumber: String(savedCards.cardNum).substring(String(savedCards.cardNum).length - 4) }).subscribe((creditCardSaved) => {
+      this.translate.get('CREDIT_CARD_SAVED', { cardnumber: String(savedCards.cardNum).substring(String(savedCards.cardNum).length - 4) }).subscribe((creditCardSaved: string) => {
         this.snackBarHelperService.open(creditCardSaved, 'confirmBar')
-      }, (translationId) => {
+      }, (translationId: string) => {
         this.snackBarHelperService.open(translationId, 'confirmBar')
       })
       this.load()
@@ -81,7 +81,7 @@ export class PaymentMethodComponent implements OnInit {
     })
   }
 
-  delete (id) {
+  delete (id: number) {
     this.paymentService.del(id).subscribe(() => {
       this.load()
     }, (err) => { console.log(err) })

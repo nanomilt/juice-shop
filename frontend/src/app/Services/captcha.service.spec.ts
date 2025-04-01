@@ -22,7 +22,7 @@ describe('CaptchaService', () => {
 
   it('should get captcha directly from the rest api', inject([CaptchaService, HttpTestingController],
     fakeAsync((service: CaptchaService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: string
       service.getCaptcha().subscribe((data) => (res = data))
       const req = httpMock.expectOne('http://localhost:3000/rest/captcha/')
       req.flush('apiResponse')

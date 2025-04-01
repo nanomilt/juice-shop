@@ -130,7 +130,8 @@ describe('PhotoWallComponent', () => {
   })
 
   it('should reinitizalise add memory form by calling resetForm', () => {
-    component.form.get('image').setValue(new File([''], 'image'))
+    const file: File = new File([''], 'image')
+    component.form.get('image').setValue(file)
     component.form.get('caption').setValue('Juice Party')
     component.resetForm()
     expect(component.form.get('image').value).toBe('')

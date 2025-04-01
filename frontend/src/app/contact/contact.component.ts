@@ -27,9 +27,9 @@ export class ContactComponent implements OnInit {
   public captchaControl: UntypedFormControl = new UntypedFormControl('', [Validators.required, Validators.pattern('-?[\\d]*')])
   public userIdControl: UntypedFormControl = new UntypedFormControl('', [])
   public rating: number = 0
-  public feedback: any = undefined
-  public captcha: any
-  public captchaId: any
+  public feedback: { UserId: string, captchaId: string, captcha: string, comment: string, rating: number } = { UserId: '', captchaId: '', captcha: '', comment: '', rating: 0 }
+  public captcha: string
+  public captchaId: string
   public confirmation: any
   public error: any
 
@@ -37,14 +37,12 @@ export class ContactComponent implements OnInit {
     private readonly formSubmitService: FormSubmitService, private readonly translate: TranslateService, private readonly snackBarHelperService: SnackBarHelperService) { }
 
   ngOnInit () {
-    this.userService.whoAmI().subscribe((data: any) => {
-      this.feedback = {}
+    this.userService.whoAmI().subscribe((data: { id: string, email: string }) => {
       this.userIdControl.setValue(data.id)
       this.feedback.UserId = data.id
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       this.authorControl.setValue(data.email ? `***${data.email.slice(3)}` : 'anonymous')
     }, (err) => {
-      this.feedback = undefined
       console.log(err)
     })
     this.getNewCaptcha()
@@ -53,7 +51,7 @@ export class ContactComponent implements OnInit {
   }
 
   getNewCaptcha () {
-    this.captchaService.getCaptcha().subscribe((data: any) => {
+    this.captchaService.getCaptcha().subscribe((data: { captcha: string, captchaId: string }) => {
       this.captcha = data.captcha
       this.captchaId = data.captchaId
     }, (err) => err)
@@ -65,7 +63,6 @@ export class ContactComponent implements OnInit {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     this.feedback.comment = `${this.feedbackControl.value} (${this.authorControl.value})`
     this.feedback.rating = this.rating
-    this.feedback.UserId = this.userIdControl.value
     this.feedbackService.save(this.feedback).subscribe((savedFeedback) => {
       if (savedFeedback.rating === 5) {
         this.translate.get('FEEDBACK_FIVE_STAR_THANK_YOU').subscribe((feedbackThankYou) => {
@@ -80,13 +77,13 @@ export class ContactComponent implements OnInit {
           this.snackBarHelperService.open(translationId)
         })
       }
-      this.feedback = {}
+      this.feedback = { UserId: '', captchaId: '', captcha: '', comment: '', rating: 0 }
       this.ngOnInit()
       this.resetForm()
     }, (err) => {
       console.log(err)
       this.snackBarHelperService.open(err.error, 'errorBar')
-      this.feedback = {}
+      this.feedback = { UserId: '', captchaId: '', captcha: '', comment: '', rating: 0 }
       this.resetCaptcha()
     })
   }

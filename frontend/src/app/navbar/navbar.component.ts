@@ -8,7 +8,7 @@ import { ChallengeService } from '../Services/challenge.service'
 import { UserService } from '../Services/user.service'
 import { AdministrationService } from '../Services/administration.service'
 import { ConfigurationService } from '../Services/configuration.service'
-import { Component, EventEmitter, NgZone, type OnInit, Output } from '@angular/core'
+import { Component, EventEmitter, NgZone, OnInit, Output } from '@angular/core'
 import { CookieService } from 'ngx-cookie'
 import { TranslateService } from '@ngx-translate/core'
 import { Router } from '@angular/router'
@@ -52,14 +52,14 @@ library.add(faLanguage, faSearch, faSignInAlt, faSignOutAlt, faComment, faBomb, 
 })
 export class NavbarComponent implements OnInit {
   public userEmail: string = ''
-  public languages: any = []
-  public selectedLanguage: string = 'placeholder'
+  public languages: { key: string, lang: string, shortKey: string }[] = []
+  public selectedLanguage: { key: string, lang: string, shortKey: string } | undefined
   public version: string = ''
   public applicationName: string = 'OWASP Juice Shop'
   public showGitHubLink: boolean = true
   public logoSrc: string = 'assets/public/images/JuiceShop_Logo.png'
   public scoreBoardVisible: boolean = false
-  public shortKeyLang: string = 'placeholder'
+  public shortKeyLang: string = ''
   public itemTotal = 0
 
   @Output() public sidenavToggle = new EventEmitter()
@@ -73,9 +73,8 @@ export class NavbarComponent implements OnInit {
   ngOnInit () {
     this.getLanguages()
     this.basketService.getItemTotal().subscribe(x => (this.itemTotal = x))
-    this.administrationService.getApplicationVersion().subscribe((version: any) => {
+    this.administrationService.getApplicationVersion().subscribe((version: string) => {
       if (version) {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         this.version = `v${version}`
       }
     }, (err) => { console.log(err) })
@@ -124,16 +123,10 @@ export class NavbarComponent implements OnInit {
   }
 
   checkLanguage () {
-    if (this.cookieService.get('language')) {
-      const langKey = this.cookieService.get('language')
-      this.translate.use(langKey)
-      this.selectedLanguage = this.languages.find((y: { key: string }) => y.key === langKey)
-      this.shortKeyLang = this.languages.find((y: { key: string }) => y.key === langKey).shortKey
-    } else {
-      this.changeLanguage('en')
-      this.selectedLanguage = this.languages.find((y: { key: string }) => y.key === 'en')
-      this.shortKeyLang = this.languages.find((y: { key: string }) => y.key === 'en').shortKey
-    }
+    const langKey = this.cookieService.get('language') || 'en'
+    this.translate.use(langKey)
+    this.selectedLanguage = this.languages.find((y) => y.key === langKey)
+    this.shortKeyLang = this.selectedLanguage?.shortKey || ''
   }
 
   search (value: string) {
@@ -146,17 +139,17 @@ export class NavbarComponent implements OnInit {
   }
 
   getUserDetails () {
-    this.userService.whoAmI().subscribe((user: any) => {
+    this.userService.whoAmI().subscribe((user: { email: string }) => {
       this.userEmail = user.email
     }, (err) => { console.log(err) })
   }
 
   isLoggedIn () {
-    return localStorage.getItem('token')
+    return localStorage.getItem('token') !== null
   }
 
   logout () {
-    this.userService.saveLastLoginIp().subscribe((user: any) => { this.noop() }, (err) => { console.log(err) })
+    this.userService.saveLastLoginIp().subscribe(() => { }, (err) => { console.log(err) })
     localStorage.removeItem('token')
     this.cookieService.remove('token')
     sessionStorage.removeItem('bid')
@@ -170,10 +163,9 @@ export class NavbarComponent implements OnInit {
     const expires = new Date()
     expires.setFullYear(expires.getFullYear() + 1)
     this.cookieService.put('language', langKey, { expires })
-    if (this.languages.find((y: { key: string }) => y.key === langKey)) {
-      const language = this.languages.find((y: { key: string }) => y.key === langKey)
+    const language = this.languages.find((y) => y.key === langKey)
+    if (language) {
       this.shortKeyLang = language.shortKey
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       const snackBarRef = this.snackBar.open(`Language has been changed to ${language.lang}`, 'Force page reload', {
         duration: 5000
       })
@@ -184,7 +176,7 @@ export class NavbarComponent implements OnInit {
   }
 
   getScoreBoardStatus () {
-    this.challengeService.find({ name: 'Score Board' }).subscribe((challenges: any) => {
+    this.challengeService.find({ name: 'Score Board' }).subscribe((challenges: { solved: boolean }[]) => {
       this.ngZone.run(() => {
         this.scoreBoardVisible = challenges[0].solved
       })
@@ -203,8 +195,7 @@ export class NavbarComponent implements OnInit {
     this.sidenavToggle.emit()
   }
 
-  // eslint-disable-next-line no-empty,@typescript-eslint/no-empty-function
-  noop () { }
+  noop = () => { }
 
   getLanguages () {
     this.langService.getLanguages().subscribe((res) => {

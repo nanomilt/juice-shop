@@ -170,9 +170,9 @@ describe('RegisterComponent', () => {
   })
 
   it('should hold nothing when no secret questions exists', () => {
-    securityQuestionService.find.and.returnValue(of(undefined))
+    securityQuestionService.find.and.returnValue(of([]))
     component.ngOnInit()
-    expect(component.securityQuestions).toBeUndefined()
+    expect(component.securityQuestions).toEqual([])
   })
 
   it('should log error from backend API on failing to get security questions', fakeAsync(() => {

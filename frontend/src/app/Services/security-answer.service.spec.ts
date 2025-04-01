@@ -22,7 +22,7 @@ describe('SecurityAnswerService', () => {
 
   it('should create feedback directly via the rest api', inject([SecurityAnswerService, HttpTestingController],
     fakeAsync((service: SecurityAnswerService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: { data: string }
       service.save(null).subscribe((data) => (res = data))
       const req = httpMock.expectOne('http://localhost:3000/api/SecurityAnswers/')
       req.flush({ data: 'apiResponse' })
@@ -30,7 +30,7 @@ describe('SecurityAnswerService', () => {
       tick()
       expect(req.request.method).toBe('POST')
       expect(req.request.body).toBeFalsy()
-      expect(res).toBe('apiResponse')
+      expect(res).toEqual({ data: 'apiResponse' })
       httpMock.verify()
     })
   ))

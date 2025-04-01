@@ -22,7 +22,7 @@ export class TokenSaleComponent implements OnInit {
   constructor (private readonly configurationService: ConfigurationService) { }
 
   ngOnInit () {
-    this.configurationService.getApplicationConfiguration().subscribe((config: any) => {
+    this.configurationService.getApplicationConfiguration().subscribe((config: { application?: { altcoinName?: string } }) => {
       if (config?.application?.altcoinName) {
         this.altcoinName = config.application.altcoinName
       }

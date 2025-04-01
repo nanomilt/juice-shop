@@ -124,6 +124,6 @@ describe('AddressComponent', () => {
     component.addressId = 1
     spyOn(sessionStorage, 'setItem')
     component.chooseAddress()
-    expect(sessionStorage.setItem).toHaveBeenCalledWith('addressId', 1 as any)
+    expect(sessionStorage.setItem).toHaveBeenCalledWith('addressId', '1')
   })
 })

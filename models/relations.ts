@@ -41,7 +41,6 @@ const relationsInit = (_sequelize: Sequelize) => {
       name: 'BasketId'
     }
   })
-  // @ts-expect-error FIXME type mismatch
   makeKeyNonUpdatable(BasketItemModel, 'BasketId')
 
   CardModel.belongsTo(UserModel, {
@@ -64,7 +63,7 @@ const relationsInit = (_sequelize: Sequelize) => {
     foreignKey: {
       name: 'UserId'
     }
-  }) // no FK constraint to allow anonymous feedback posts
+  })
 
   ImageCaptchaModel.belongsTo(UserModel, {
     foreignKey: {
@@ -94,7 +93,6 @@ const relationsInit = (_sequelize: Sequelize) => {
       name: 'ProductId'
     }
   })
-  // @ts-expect-error FIXME type mismatch
   makeKeyNonUpdatable(BasketItemModel, 'ProductId')
 
   QuantityModel.belongsTo(ProductModel, {

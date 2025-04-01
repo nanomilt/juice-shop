@@ -17,7 +17,7 @@ export class OAuthComponent implements OnInit {
   constructor (private readonly cookieService: CookieService, private readonly userService: UserService, private readonly router: Router, private readonly route: ActivatedRoute, private readonly ngZone: NgZone) { }
 
   ngOnInit () {
-    this.userService.oauthLogin(this.parseRedirectUrlParams().access_token).subscribe((profile: any) => {
+    this.userService.oauthLogin(this.parseRedirectUrlParams().access_token).subscribe((profile: { email: string }) => {
       const password = btoa(profile.email.split('').reverse().join(''))
       this.userService.save({ email: profile.email, password, passwordRepeat: password }).subscribe(() => {
         this.login(profile)
@@ -28,7 +28,7 @@ export class OAuthComponent implements OnInit {
     })
   }
 
-  login (profile: any) {
+  login (profile: { email: string }) {
     this.userService.login({ email: profile.email, password: btoa(profile.email.split('').reverse().join('')), oauth: true }).subscribe((authentication) => {
       const expires = new Date()
       expires.setHours(expires.getHours() + 8)
@@ -53,7 +53,7 @@ export class OAuthComponent implements OnInit {
   parseRedirectUrlParams () {
     const hash = this.route.snapshot.data.params.substr(1)
     const splitted = hash.split('&')
-    const params: any = {}
+    const params: { [key: string]: string } = {}
     for (let i = 0; i < splitted.length; i++) {
       const param: string = splitted[i].split('=')
       const key: string = param[0]

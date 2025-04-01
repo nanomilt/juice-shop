@@ -21,7 +21,7 @@ describe('TwoFactorAuthServiceService', () => {
   it('should verify TOTP token directly via the rest api', inject([TwoFactorAuthService, HttpTestingController],
     fakeAsync((service: TwoFactorAuthService, httpMock: HttpTestingController) => {
       localStorage.setItem('totp_tmp_token', '000000')
-      let res: any
+      let res: { authentication: string }
       service.verify('123456').subscribe((data) => (res = data))
 
       const req = httpMock.expectOne('http://localhost:3000/rest/2fa/verify')
@@ -30,14 +30,14 @@ describe('TwoFactorAuthServiceService', () => {
 
       expect(req.request.method).toBe('POST')
       expect(req.request.body).toEqual({ tmpToken: '000000', totpToken: '123456' })
-      expect(res).toBe('apiResponse')
+      expect(res).toEqual({ authentication: 'apiResponse' })
       httpMock.verify()
     })
   ))
 
   it('should retrieve 2FA status directly via the rest api', inject([TwoFactorAuthService, HttpTestingController],
     fakeAsync((service: TwoFactorAuthService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: { setup: boolean }
       service.status().subscribe((data) => (res = data))
 
       const req = httpMock.expectOne('http://localhost:3000/rest/2fa/status')
@@ -53,7 +53,7 @@ describe('TwoFactorAuthServiceService', () => {
 
   it('should set up 2FA directly via the rest api', inject([TwoFactorAuthService, HttpTestingController],
     fakeAsync((service: TwoFactorAuthService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: undefined
       service.setup('s3cr3t!', 'initialToken', 'setupToken').subscribe((data) => (res = data))
 
       const req = httpMock.expectOne('http://localhost:3000/rest/2fa/setup')
@@ -69,7 +69,7 @@ describe('TwoFactorAuthServiceService', () => {
 
   it('should disable 2FA directly via the rest api', inject([TwoFactorAuthService, HttpTestingController],
     fakeAsync((service: TwoFactorAuthService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: undefined
       service.disable('s3cr3t!').subscribe((data) => (res = data))
 
       const req = httpMock.expectOne('http://localhost:3000/rest/2fa/disable')

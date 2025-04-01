@@ -18,10 +18,10 @@ export class ChatbotService {
   constructor (private readonly http: HttpClient) { }
 
   getChatbotStatus () {
-    return this.http.get(this.host + '/status').pipe(map((response: any) => response), catchError((error: Error) => { throw error }))
+    return this.http.get(this.host + '/status').pipe(map((response: { [key: string]: any }) => response), catchError((error: Error) => { throw error }))
   }
 
-  getResponse (action, query) {
-    return this.http.post(this.host + '/respond', { action, query }).pipe(map((response: any) => response), catchError((error: Error) => { throw error }))
+  getResponse (action: string, query: string) {
+    return this.http.post(this.host + '/respond', { action, query }).pipe(map((response: { [key: string]: any }) => response), catchError((error: Error) => { throw error }))
   }
 }

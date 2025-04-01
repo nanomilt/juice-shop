@@ -62,7 +62,7 @@ exports.serveChallengesWithCodeSnippet = () => async (req: Request, res: Respons
   res.json({ challenges: codingChallenges })
 }
 
-export const getVerdict = (vulnLines: number[], neutralLines: number[], selectedLines: number[]) => {
+export const getVerdict = (vulnLines: number[], neutralLines: number[], selectedLines: number[] | undefined) => {
   if (selectedLines === undefined) return false
   if (vulnLines.length > selectedLines.length) return false
   if (!vulnLines.every(e => selectedLines.includes(e))) return false

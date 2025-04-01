@@ -15,7 +15,7 @@ import * as jwtDecode from 'jwt-decode'
 })
 
 export class LastLoginIpComponent {
-  lastLoginIp: any = '?'
+  lastLoginIp: string = '?'
   constructor (private readonly sanitizer: DomSanitizer) {}
 
   ngOnInit () {
@@ -27,11 +27,11 @@ export class LastLoginIpComponent {
   }
 
   parseAuthToken () {
-    let payload = {} as any
+    let payload: { data?: { lastLoginIp?: string } } = {}
     const token = localStorage.getItem('token')
     if (token) {
       payload = jwtDecode(token)
-      if (payload.data.lastLoginIp) {
+      if (payload.data?.lastLoginIp) {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         this.lastLoginIp = this.sanitizer.bypassSecurityTrustHtml(`<small>${payload.data.lastLoginIp}</small>`)
       }

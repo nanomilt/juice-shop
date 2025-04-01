@@ -16,11 +16,11 @@ import { of, throwError } from 'rxjs'
 describe('UserDetailsComponent', () => {
   let component: UserDetailsComponent
   let fixture: ComponentFixture<UserDetailsComponent>
-  let userService: any
+  let userService: jasmine.SpyObj<UserService>
 
   beforeEach(waitForAsync(() => {
-    userService = jasmine.createSpyObj('UserService', ['get'])
-    userService.get.and.returnValue(of({}))
+    const userServiceSpy = jasmine.createSpyObj('UserService', ['get'])
+    userServiceSpy.get.and.returnValue(of({}))
 
     TestBed.configureTestingModule({
       imports: [
@@ -31,7 +31,7 @@ describe('UserDetailsComponent', () => {
       ],
       declarations: [UserDetailsComponent],
       providers: [
-        { provide: UserService, useValue: userService },
+        { provide: UserService, useValue: userServiceSpy },
         { provide: MatDialogRef, useValue: {} },
         { provide: MAT_DIALOG_DATA, useValue: { dialogData: {} } }
       ]
@@ -57,8 +57,9 @@ describe('UserDetailsComponent', () => {
   })
 
   it('should set the retrieved user', () => {
-    userService.get.and.returnValue(of('User'))
+    const user = { name: 'John Doe' }
+    userService.get.and.returnValue(of(user))
     component.ngOnInit()
-    expect(component.user).toBe('User')
+    expect(component.user).toEqual(user)
   })
 })

@@ -34,12 +34,12 @@ export class AccountingComponent implements AfterViewInit, OnDestroy {
   public orderData: Order[]
   public orderSource
   public displayedColumns = ['Product', 'Price', 'Quantity']
-  public tableData: any[]
+  public tableData: { id: number, name: string, price: number, quantity: number }[]
   public dataSource
   @ViewChild('paginator', { static: true }) paginator: MatPaginator
   private productSubscription: Subscription
   private quantitySubscription: Subscription
-  public quantityMap: any
+  public quantityMap: { [key: number]: { id: number, quantity: number } }
   constructor (private readonly productService: ProductService, private readonly quantityService: QuantityService, private readonly orderHistoryService: OrderHistoryService, private readonly snackBarHelperService: SnackBarHelperService) { }
 
   ngAfterViewInit () {
@@ -61,9 +61,9 @@ export class AccountingComponent implements AfterViewInit, OnDestroy {
   }
 
   loadProducts () {
-    this.productSubscription = this.productService.search('').subscribe((tableData: any) => {
+    this.productSubscription = this.productService.search('').subscribe((tableData: { id: number, name: string, price: number, quantity: number }[]) => {
       this.tableData = tableData
-      this.dataSource = new MatTableDataSource<Element>(this.tableData)
+      this.dataSource = new MatTableDataSource<{ id: number, name: string, price: number, quantity: number }>(this.tableData)
       this.dataSource.paginator = this.paginator
     }, (err) => { console.log(err) })
   }

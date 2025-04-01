@@ -37,7 +37,7 @@ describe('FeedbackService', () => {
 
   it('should delete feedback directly via the rest api', inject([FeedbackService, HttpTestingController],
     fakeAsync((service: FeedbackService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: unknown
       service.del(1).subscribe((data) => (res = data))
       const req = httpMock.expectOne('http://localhost:3000/api/Feedbacks/1')
       req.flush({ data: 'apiResponse' })
@@ -51,7 +51,7 @@ describe('FeedbackService', () => {
 
   it('should create feedback directly via the rest api', inject([FeedbackService, HttpTestingController],
     fakeAsync((service: FeedbackService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: unknown
       service.save(null).subscribe((data) => (res = data))
       const req = httpMock.expectOne('http://localhost:3000/api/Feedbacks/')
       req.flush({ data: 'apiResponse' })

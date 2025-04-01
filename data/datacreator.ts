@@ -1,9 +1,3 @@
-/*
- * Copyright (c) 2014-2024 Bjoern Kimminich & the OWASP Juice Shop contributors.
- * SPDX-License-Identifier: MIT
- */
-
-/* jslint node: true */
 import { AddressModel } from '../models/address'
 import { BasketModel } from '../models/basket'
 import { BasketItemModel } from '../models/basketitem'
@@ -97,9 +91,7 @@ async function createChallenges () {
       }
     })
   )
-}
-
-async function createUsers () {
+}async function createUsers () {
   const users = await loadStaticUserData()
 
   await Promise.all(
@@ -194,9 +186,7 @@ async function createCards (UserId: number, cards: StaticUserCard[]) {
       logger.error(`Could not create card: ${utils.getErrorMessage(err)}`)
     })
   }))
-}
-
-async function deleteUser (userId: number) {
+}async function deleteUser (userId: number) {
   return await UserModel.destroy({ where: { id: userId } }).catch((err: unknown) => {
     logger.error(`Could not perform soft delete for the user ${userId}: ${utils.getErrorMessage(err)}`)
   })
@@ -290,9 +280,7 @@ async function createMemories () {
   ]
 
   return await Promise.all(memories)
-}
-
-async function createProducts () {
+}async function createProducts () {
   const products = structuredClone(config.get<ProductConfig[]>('products')).map((product) => {
     product.price = product.price ?? Math.floor(Math.random() * 9 + 1)
     product.deluxePrice = product.deluxePrice ?? product.price
@@ -391,7 +379,6 @@ async function createProducts () {
           )
     )
   )
-
   function customizeChangeProductChallenge (description: string, customUrl: string, customProduct: Product) {
     let customDescription = description.replace(/OWASP SSL Advanced Forensic Tool \(O-Saft\)/g, customProduct.name)
     customDescription = customDescription.replace('https://owasp.slack.com', customUrl)
@@ -401,9 +388,7 @@ async function createProducts () {
   function customizeRetrieveBlueprintChallenge (hint: string, customProduct: Product) {
     return hint.replace(/OWASP Juice Shop Logo \(3D-printed\)/g, customProduct.name)
   }
-}
-
-async function createBaskets () {
+}async function createBaskets () {
   const baskets = [
     { UserId: 1 },
     { UserId: 2 },
@@ -499,9 +484,7 @@ async function createAnonymousFeedback () {
   return await Promise.all(
     feedbacks.map(async (feedback) => await createFeedback(null, feedback.comment, feedback.rating))
   )
-}
-
-async function createFeedback (UserId: number | null, comment: string, rating: number, author?: string) {
+}async function createFeedback (UserId: number | null, comment: string, rating: number, author?: string) {
   const authoredComment = author ? `${comment} (***${author.slice(3)})` : `${comment} (anonymous)`
   return await FeedbackModel.create({ UserId, comment: authoredComment, rating }).catch((err: unknown) => {
     logger.error(`Could not insert Feedback ${authoredComment} mapped to UserId ${UserId}: ${utils.getErrorMessage(err)}`)
@@ -598,9 +581,7 @@ async function createRecycle (data: { UserId: number, quantity: number, AddressI
   }).catch((err: unknown) => {
     logger.error(`Could not insert Recycling Model: ${utils.getErrorMessage(err)}`)
   })
-}
-
-async function createSecurityQuestions () {
+}async function createSecurityQuestions () {
   const questions = await loadStaticSecurityQuestionsData()
 
   await Promise.all(
@@ -618,9 +599,7 @@ async function createSecurityAnswer (UserId: number, SecurityQuestionId: number,
   return await SecurityAnswerModel.create({ SecurityQuestionId, UserId, answer }).catch((err: unknown) => {
     logger.error(`Could not insert SecurityAnswer ${answer} mapped to UserId ${UserId}: ${utils.getErrorMessage(err)}`)
   })
-}
-
-async function createOrders () {
+}async function createOrders () {
   const products = config.get<Product[]>('products')
   const basket1Products = [
     {
@@ -717,9 +696,7 @@ async function createOrders () {
       })
     )
   )
-}
-
-async function prepareFilesystem () {
+}async function prepareFilesystem () {
   replace({
     regex: 'http://localhost:3000',
     replacement: config.get<string>('server.baseUrl'),

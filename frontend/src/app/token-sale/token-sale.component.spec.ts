@@ -14,11 +14,11 @@ import { MatButtonModule } from '@angular/material/button'
 describe('TokenSaleComponent', () => {
   let component: TokenSaleComponent
   let fixture: ComponentFixture<TokenSaleComponent>
-  let configurationService: any
+  let configurationService: ConfigurationService
 
   beforeEach(waitForAsync(() => {
-    configurationService = jasmine.createSpyObj('ConfigurationService', ['getApplicationConfiguration'])
-    configurationService.getApplicationConfiguration.and.returnValue(of({ application: { } }))
+    const configurationServiceSpy = jasmine.createSpyObj('ConfigurationService', ['getApplicationConfiguration'])
+    configurationServiceSpy.getApplicationConfiguration.and.returnValue(of({ application: { } }))
     TestBed.configureTestingModule({
       declarations: [TokenSaleComponent],
       imports: [
@@ -27,7 +27,7 @@ describe('TokenSaleComponent', () => {
         MatButtonModule
       ],
       providers: [
-        { provide: ConfigurationService, useValue: configurationService }
+        { provide: ConfigurationService, useValue: configurationServiceSpy }
       ]
     })
       .compileComponents()
@@ -36,6 +36,7 @@ describe('TokenSaleComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TokenSaleComponent)
     component = fixture.componentInstance
+    configurationService = TestBed.inject(ConfigurationService)
     fixture.detectChanges()
   })
 

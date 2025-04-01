@@ -27,7 +27,7 @@ describe('SavedPaymentMethodsComponent', () => {
   let component: SavedPaymentMethodsComponent
   let translateService
   let fixture: ComponentFixture<SavedPaymentMethodsComponent>
-  let snackBar: any
+  let snackBar: jasmine.SpyObj<MatSnackBar>
 
   beforeEach(waitForAsync(() => {
     translateService = jasmine.createSpyObj('TranslateService', ['get'])

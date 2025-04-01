@@ -130,7 +130,8 @@ describe('ComplaintComponent', () => {
   })
 
   it('should begin uploading file if it has been added on saving', fakeAsync(() => {
-    component.uploader.queue[0] = new FileItem(component.uploader, new File([''], 'file.pdf', { type: 'application/pdf' }), {})
+    const file = new File([''], 'file.pdf', { type: 'application/pdf' })
+    component.uploader.queue[0] = new FileItem(component.uploader, file, {})
     spyOn(component.uploader.queue[0], 'upload')
     component.save()
     expect(component.uploader.queue[0].upload).toHaveBeenCalled()

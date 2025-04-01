@@ -46,13 +46,15 @@ export default defineConfig({
           )[0]
         },
         GetCouponIntent () {
-          const trainingData = require(`data/chatbot/${utils.extractFilename(
+          const trainingDataPath = utils.extractFilename(
             config.get('application.chatBot.trainingData')
-          )}`)
-          const couponIntent = trainingData.data.filter(
-            (data: { intent: string }) => data.intent === 'queries.couponCode'
-          )[0]
-          return couponIntent
+          )
+          import(`data/chatbot/${trainingDataPath}`).then((trainingData) => {
+            const couponIntent = trainingData.data.filter(
+              (data) => data.intent === 'queries.couponCode'
+            )[0]
+            return couponIntent
+          })
         },
         GetFromMemories (property: string) {
           for (const memory of config.get<MemoryConfig[]>('memories') as any) {

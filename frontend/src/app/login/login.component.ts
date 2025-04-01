@@ -6,7 +6,7 @@
 import { CookieService } from 'ngx-cookie'
 import { WindowRefService } from '../Services/window-ref.service'
 import { Router } from '@angular/router'
-import { Component, NgZone, type OnInit } from '@angular/core'
+import { Component, NgZone, OnInit } from '@angular/core'
 import { UntypedFormControl, Validators } from '@angular/forms'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { UserService } from '../Services/user.service'
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
   public passwordControl = new UntypedFormControl('', [Validators.required, Validators.minLength(1)])
 
   public hide = true
-  public user: any
+  public user: { email: string, password: string } = { email: '', password: '' }
   public rememberMe: UntypedFormControl = new UntypedFormControl(false)
   public error: any
   public clientId = '1005568560502-6hm16lef8oh46hr2d98vf2ohlnj4nfhq.apps.googleusercontent.com'
@@ -43,7 +43,6 @@ export class LoginComponent implements OnInit {
   ngOnInit () {
     const email = localStorage.getItem('email')
     if (email) {
-      this.user = {}
       this.user.email = email
       this.rememberMe.setValue(true)
     } else {
@@ -70,10 +69,9 @@ export class LoginComponent implements OnInit {
   }
 
   login () {
-    this.user = {}
     this.user.email = this.emailControl.value
     this.user.password = this.passwordControl.value
-    this.userService.login(this.user).subscribe((authentication: any) => {
+    this.userService.login(this.user).subscribe((authentication: { token: string, bid: string }) => {
       localStorage.setItem('token', authentication.token)
       const expires = new Date()
       expires.setHours(expires.getHours() + 8)

@@ -22,7 +22,7 @@ describe('CodeSnippetService', () => {
 
   it('should get single snippet directly from the rest api', inject([CodeSnippetService, HttpTestingController],
     fakeAsync((service: CodeSnippetService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: string
       service.get('testChallenge').subscribe((data) => (res = data))
 
       const req = httpMock.expectOne('http://localhost:3000/snippets/testChallenge')
@@ -37,7 +37,7 @@ describe('CodeSnippetService', () => {
 
   it('should get list of challenges with code snippets directly from the rest api', inject([CodeSnippetService, HttpTestingController],
     fakeAsync((service: CodeSnippetService, httpMock: HttpTestingController) => {
-      let res: any
+      let res: string[]
       service.challenges().subscribe((data) => (res = data))
 
       const req = httpMock.expectOne('http://localhost:3000/snippets')

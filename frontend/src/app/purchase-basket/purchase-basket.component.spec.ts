@@ -27,9 +27,9 @@ describe('PurchaseBasketComponent', () => {
   let fixture: ComponentFixture<PurchaseBasketComponent>
   let basketService
   let userService
-  let translateService: any
+  let translateService: { get: jasmine.Spy, onLangChange: EventEmitter<any>, onTranslationChange: EventEmitter<any>, onDefaultLangChange: EventEmitter<any> }
   let deluxeGuard
-  let snackBar: any
+  let snackBar: { open: jasmine.Spy }
 
   beforeEach(waitForAsync(() => {
     basketService = jasmine.createSpyObj('BasketService', ['find', 'del', 'get', 'put', 'updateNumberOfCartItems'])

@@ -4,6 +4,13 @@ import { DifficultyOverviewScoreCardComponent } from './difficulty-overview-scor
 import { ScoreCardComponent } from '../score-card/score-card.component'
 import { TranslateModule } from '@ngx-translate/core'
 
+interface Challenge {
+  difficulty: number;
+  solved: boolean;
+  hasCodingChallenge: boolean;
+  codingChallengeStatus?: number;
+}
+
 describe('DifficultyOverviewScoreCardComponent', () => {
   let component: DifficultyOverviewScoreCardComponent
   let fixture: ComponentFixture<DifficultyOverviewScoreCardComponent>
@@ -41,8 +48,8 @@ describe('DifficultyOverviewScoreCardComponent', () => {
     })
     it('should calculate difficulty summaries', () => {
       expect(DifficultyOverviewScoreCardComponent.calculateDifficultySummaries([
-        { difficulty: 1, solved: true, hasCodingChallenge: false } as any,
-        { difficulty: 1, solved: true, hasCodingChallenge: true, codingChallengeStatus: 1 } as any
+        { difficulty: 1, solved: true, hasCodingChallenge: false },
+        { difficulty: 1, solved: true, hasCodingChallenge: true, codingChallengeStatus: 1 }
       ])).toEqual([
         { difficulty: 1, availableChallenges: 4, solvedChallenges: 3 },
         { difficulty: 2, availableChallenges: 0, solvedChallenges: 0 },
@@ -54,13 +61,13 @@ describe('DifficultyOverviewScoreCardComponent', () => {
     })
     it('should calculate difficulty summaries for multiple difficulties', () => {
       expect(DifficultyOverviewScoreCardComponent.calculateDifficultySummaries([
-        { difficulty: 1, solved: true, hasCodingChallenge: true, codingChallengeStatus: 0 } as any,
-        { difficulty: 1, solved: true, hasCodingChallenge: true, codingChallengeStatus: 0 } as any,
-        { difficulty: 1, solved: true, hasCodingChallenge: true, codingChallengeStatus: 1 } as any,
-        { difficulty: 1, solved: true, hasCodingChallenge: true, codingChallengeStatus: 2 } as any,
-        { difficulty: 1, solved: false, hasCodingChallenge: true, codingChallengeStatus: 0 } as any,
-        { difficulty: 2, solved: true, hasCodingChallenge: true, codingChallengeStatus: 0 } as any,
-        { difficulty: 3, solved: false, hasCodingChallenge: true, codingChallengeStatus: 0 } as any
+        { difficulty: 1, solved: true, hasCodingChallenge: true, codingChallengeStatus: 0 },
+        { difficulty: 1, solved: true, hasCodingChallenge: true, codingChallengeStatus: 0 },
+        { difficulty: 1, solved: true, hasCodingChallenge: true, codingChallengeStatus: 1 },
+        { difficulty: 1, solved: true, hasCodingChallenge: true, codingChallengeStatus: 2 },
+        { difficulty: 1, solved: false, hasCodingChallenge: true, codingChallengeStatus: 0 },
+        { difficulty: 2, solved: true, hasCodingChallenge: true, codingChallengeStatus: 0 },
+        { difficulty: 3, solved: false, hasCodingChallenge: true, codingChallengeStatus: 0 }
       ])).toEqual([
         { difficulty: 1, availableChallenges: 15, solvedChallenges: 7 },
         { difficulty: 2, availableChallenges: 3, solvedChallenges: 1 },

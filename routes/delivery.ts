@@ -5,8 +5,7 @@
 
 import { type Request, type Response, type NextFunction } from 'express'
 import { DeliveryModel } from '../models/delivery'
-
-const security = require('../lib/insecurity')
+import security from '../lib/insecurity'
 
 module.exports.getDeliveryMethods = function getDeliveryMethods () {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -32,7 +31,7 @@ module.exports.getDeliveryMethods = function getDeliveryMethods () {
 module.exports.getDeliveryMethod = function getDeliveryMethod () {
   return async (req: Request, res: Response, next: NextFunction) => {
     const method = await DeliveryModel.findOne({ where: { id: req.params.id } })
-    if (method != null) {
+    if (method !== null) {
       const sendMethod = {
         id: method.id,
         name: method.name,
