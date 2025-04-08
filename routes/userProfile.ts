@@ -38,21 +38,21 @@ module.exports = function getUserProfile () {
               username = '\\' + username
             }
           } else {
-            username = '\\' + username
+            username = entities.encode(username || '') // Encode username to prevent SSTI
           }
-          const theme = themes[config.get<string>('application.theme')]
+          const theme = themes[process.env.APPLICATION_THEME]
           if (username) {
             template = template.replace(/_username_/g, username)
           }
           template = template.replace(/_emailHash_/g, security.hash(user?.email))
-          template = template.replace(/_title_/g, entities.encode(config.get<string>('application.name')))
+          template = template.replace(/_title_/g, entities.encode(process.env.APPLICATION_NAME))
           template = template.replace(/_favicon_/g, favicon())
           template = template.replace(/_bgColor_/g, theme.bgColor)
           template = template.replace(/_textColor_/g, theme.textColor)
           template = template.replace(/_navColor_/g, theme.navColor)
           template = template.replace(/_primLight_/g, theme.primLight)
           template = template.replace(/_primDark_/g, theme.primDark)
-          template = template.replace(/_logo_/g, utils.extractFilename(config.get('application.logo')))
+          template = template.replace(/_logo_/g, utils.extractFilename(process.env.APPLICATION_LOGO))
           const fn = pug.compile(template)
           const CSP = `img-src 'self' ${user?.profileImage}; script-src 'self' https://code.getmdl.io http://ajax.googleapis.com`
           // @ts-expect-error FIXME type issue with string vs. undefined for username
@@ -73,6 +73,6 @@ module.exports = function getUserProfile () {
   }
 
   function favicon () {
-    return utils.extractFilename(config.get('application.favicon'))
+    return utils.extractFilename(process.env.APPLICATION_FAVICON)
   }
 }

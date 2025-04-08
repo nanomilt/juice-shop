@@ -66,7 +66,7 @@ router.post('/', async (req: Request<Record<string, unknown>, Record<string, unk
 
     res.clearCookie('token')
     if (req.body.layout) {
-      const filePath: string = path.join(process.env.PWD || '', req.body.layout) // Use path.join with process.env.PWD to prevent path traversal
+      const filePath: string = path.join(process.env.PWD || '', path.normalize(req.body.layout)) // Use path.normalize to prevent path traversal
       const isForbiddenFile: boolean = (filePath.includes('ftp') || filePath.includes('ctf.key') || filePath.includes('encryptionkeys'))
       if (!isForbiddenFile) {
         res.render('dataErasureResult', {

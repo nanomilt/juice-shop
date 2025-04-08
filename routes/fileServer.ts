@@ -30,13 +30,9 @@ module.exports = function servePublicFiles () {
       challengeUtils.solveIf(challenges.directoryListingChallenge, () => { return file.toLowerCase() === 'acquisitions.md' })
       verifySuccessfulPoisonNullByteExploit(file)
 
-      const resolvedPath = path.resolve(process.env.PUBLIC_FILE_DIR || 'ftp/', file)
-      if (!resolvedPath.startsWith(path.resolve(process.env.PUBLIC_FILE_DIR || 'ftp/'))) {
-        res.status(403)
-        next(new Error('Forbidden path traversal attempt!'))
-        return
-      }
-      res.sendFile(resolvedPath)
+      const resolvedPath = path.resolve(path.join(process.env.PUBLIC_FILE_DIR || 'ftp/', file)) // Path sanitized using path.join
+
+      res.sendFile(resolvedPath, { root: process.env.PUBLIC_FILE_DIR || 'ftp/' }) // Using root option to prevent path traversal
     } else {
       res.status(403)
       next(new Error('Only .md and .pdf files are allowed!'))

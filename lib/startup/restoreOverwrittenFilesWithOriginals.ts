@@ -26,7 +26,7 @@ const restoreOverwrittenFilesWithOriginals = async () => {
     await Promise.all(
       files.map(async (filename: string) => {
         const sanitizedFilename = path.basename(filename) // Sanitize the filename to prevent path traversal
-        await copyFile(filename, path.resolve('i18n/', sanitizedFilename))
+        await copyFile(filename, path.resolve(process.env.I18N_PATH || 'i18n/', sanitizedFilename))
       })
     )
   } catch (err) {

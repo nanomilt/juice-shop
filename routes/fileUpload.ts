@@ -39,7 +39,7 @@ function handleZipFileUpload ({ file }: Request, res: Response, next: NextFuncti
                 const absolutePath = path.resolve('uploads/complaints/' + fileName)
                 // Sanitize user input to prevent path traversal vulnerability
                 const sanitizedPath = path.normalize(absolutePath).replace(/^(\.\.(\/|\\|$))+/, '')
-                challengeUtils.solveIf(challenges.fileWriteChallenge, () => { return sanitizedPath === path.resolve('ftp/legal.md') })
+                challengeUtils.solveIf(challenges.fileWriteChallenge, () => { return sanitizedPath === path.resolve(process.env.PATH_TO_FILE) })
                 if (sanitizedPath.includes(path.resolve('.'))) {
                   entry.pipe(fs.createWriteStream('uploads/complaints/' + fileName).on('error', function (err) { next(err) }))
                 } else {

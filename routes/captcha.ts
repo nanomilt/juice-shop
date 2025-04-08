@@ -20,7 +20,7 @@ function captchas () {
     const secondOperator = operators[Math.floor((Math.random() * 3))]
 
     const expression = `${firstTerm}${firstOperator}${secondTerm}${secondOperator}${thirdTerm}`
-    const answer = eval(expression).toString() // eslint-disable-line no-eval
+    const answer = calculateExpression(expression) // Use a safe function instead of eval()
 
     const captcha = {
       captchaId,
@@ -31,6 +31,31 @@ function captchas () {
     await captchaInstance.save()
     res.json(captcha)
   }
+}
+
+// Safe function to calculate the expression
+function calculateExpression(expression: string): string {
+  const terms = expression.split(/([+\-*])/);
+  let result = parseInt(terms[0], 10);
+
+  for (let i = 1; i < terms.length; i += 2) {
+    const operator = terms[i];
+    const term = parseInt(terms[i + 1], 10);
+
+    switch (operator) {
+      case '+':
+        result += term;
+        break;
+      case '-':
+        result -= term;
+        break;
+      case '*':
+        result *= term;
+        break;
+    }
+  }
+
+  return result.toString();
 }
 
 captchas.verifyCaptcha = () => (req: Request, res: Response, next: NextFunction) => {
