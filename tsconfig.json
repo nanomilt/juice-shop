@@ -15,7 +15,9 @@
     "lib": [
       "es2020",
       "dom"
-    ]
+    ],
+    "experimentalDecorators": true,          
+    "emitDecoratorMetadata": true
   },
   "include" : [
     "cypress/**/*.ts",
