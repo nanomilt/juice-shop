@@ -23,6 +23,7 @@ import DOMPurify from 'dompurify' // Import DOMPurify library
 
 let trainingFile = config.get<string>('application.chatBot.trainingData')
 let testCommand: string
+
 export let bot: Bot | null = null
 
 export async function initialize () {
@@ -246,4 +247,9 @@ async function getUserFromJwt (token: string): Promise<User | null> {
       }
     })
   })
+}
+
+// Sanitize user input with DOMPurify
+function sanitizeHTML(html: string): string {
+  return DOMPurify.sanitize(html);
 }

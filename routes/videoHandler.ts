@@ -52,7 +52,7 @@ exports.promotionVideo = () => {
     fs.readFile('views/promotionVideo.pug', function (err, buf) {
       if (err != null) throw err
       let template = buf.toString()
-      const subs = getSubsFromFile()
+      let subs = getSubsFromFile()
 
       // Sanitize the subtitles data to prevent XSS
       subs = entities.encode(subs)

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-import path = require('path')
+import path from 'path'
 import { type Request, type Response, type NextFunction } from 'express'
 import { BasketModel } from '../models/basket'
 import { ProductModel } from '../models/product'
@@ -11,7 +11,7 @@ import { BasketItemModel } from '../models/basketitem'
 import { QuantityModel } from '../models/quantity'
 import { DeliveryModel } from '../models/delivery'
 import { WalletModel } from '../models/wallet'
-import challengeUtils = require('../lib/challengeUtils')
+import * as challengeUtils from '../lib/challengeUtils'
 import config from 'config'
 import * as utils from '../lib/utils'
 import * as db from '../data/mongodb'
@@ -20,6 +20,7 @@ import { challenges, products } from '../data/datacache'
 const fs = require('fs')
 const PDFDocument = require('pdfkit')
 const security = require('../lib/insecurity')
+const sanitizeFilePath = require('path').posix.normalize // Path sanitization
 
 interface Product {
   quantity: number
@@ -42,7 +43,7 @@ module.exports = function placeOrder () {
           const pdfFile = `order_${orderId}.pdf`
           const doc = new PDFDocument()
           const date = new Date().toJSON().slice(0, 10)
-          const fileWriter = doc.pipe(fs.createWriteStream(path.join(process.env.TEMP_DIR || '/tmp', pdfFile))) // Path sanitization
+          const fileWriter = doc.pipe(fs.createWriteStream(path.join(process.env.TEMP_DIR || '/tmp', sanitizeFilePath(pdfFile)))) // Path sanitization
 
           fileWriter.on('finish', async () => {
             void basket.update({ coupon: null })
@@ -68,11 +69,13 @@ module.exports = function placeOrder () {
           basket.Products?.forEach(({ BasketItem, price, deluxePrice, name, id }) => {
             if (BasketItem != null) {
               challengeUtils.solveIf(challenges.christmasSpecialChallenge, () => { return BasketItem.ProductId === products.christmasSpecial.id })
-              QuantityModel.findOne({ where: { ProductId: BasketItem.ProductId } }).then((product: any) => {
-                const newQuantity = product.quantity - BasketItem.quantity
-                QuantityModel.update({ quantity: newQuantity }, { where: { ProductId: BasketItem?.ProductId } }).catch((error: unknown) => {
-                  next(error)
-                })
+              QuantityModel.findOne({ where: { ProductId: BasketItem.ProductId } }).then((product: QuantityModel | null) => {
+                if (product != null) {
+                  const newQuantity = product.quantity - BasketItem.quantity
+                  QuantityModel.update({ quantity: newQuantity }, { where: { ProductId: BasketItem?.ProductId } }).catch((error: unknown) => {
+                    next(error)
+                  })
+                }
               }).catch((error: unknown) => {
                 next(error)
               })

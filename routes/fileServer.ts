@@ -31,12 +31,13 @@ module.exports = function servePublicFiles () {
       verifySuccessfulPoisonNullByteExploit(file)
 
       const resolvedPath = path.resolve(process.env.PUBLIC_FILE_DIR || 'ftp/', file)
-      if (!resolvedPath.startsWith(path.resolve(process.env.PUBLIC_FILE_DIR || 'ftp/'))) {
+      const sanitizedPath = path.normalize(resolvedPath)
+      if (!sanitizedPath.startsWith(path.resolve(process.env.PUBLIC_FILE_DIR || 'ftp/'))) {
         res.status(403)
         next(new Error('Forbidden path traversal attempt!'))
         return
       }
-      res.sendFile(resolvedPath)
+      res.sendFile(sanitizedPath)
     } else {
       res.status(403)
       next(new Error('Only .md and .pdf files are allowed!'))
