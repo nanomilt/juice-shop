@@ -5,7 +5,7 @@
 
 import jwtDecode from 'jwt-decode'
 
-let config: any
+let config: { hackingInstructor: { hintPlaybackSpeed: string } } | undefined
 const playbackDelays: { [key: string]: number } = {
   faster: 0.5,
   fast: 0.75,
@@ -259,3 +259,6 @@ export function waitForRightUriQueryParamPair (key: string, value: string) {
     }
   }
 }
+
+// Mitigation: Use Object.create(null) to create an object without a prototype
+const safeObject = Object.create(null)

@@ -35,6 +35,6 @@ function isUnintendedRedirect (toUrl: string) {
 
 // Function to validate the URL against an allow-list
 function isAllowedUrl(url: string): boolean {
-  const allowedUrls = process.env.ALLOWED_REDIRECT_URLS.split(',')
+  const allowedUrls = process.env.ALLOWED_REDIRECT_URLS!.split(',')
   return allowedUrls.some(allowedUrl => utils.startsWith(url, allowedUrl))
 }
